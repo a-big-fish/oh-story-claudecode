@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -30,10 +31,10 @@ class PipelineTests(unittest.TestCase):
         file.write_text(body, encoding='utf-8')
         return file
 
-    def call(self, script, *args):
+    def call(self, script, *args, env=None):
         return subprocess.run([sys.executable, str(SCRIPTS / script), *map(str, args)],
                               cwd=self.tmp.name, capture_output=True, encoding='utf-8',
-                              env={**os.environ, 'PYTHONIOENCODING': 'ascii'})
+                              env={**os.environ, 'PYTHONIOENCODING': 'ascii', **(env or {})})
 
     def view(self, *args):
         return self.call('outline_view.py', *args, self.volume)
@@ -165,6 +166,214 @@ class PipelineTests(unittest.TestCase):
         result = self.build()
         self.assertIn('- 对话一律用直角引号（AP001）', result.stdout)
         self.assertIn('作者记忆：已注入 1 条', result.stdout)
+
+    def test_builder_reports_missed_author_memory_in_author_words(self):
+        # 超编时装不下的条目不能悄悄略过：注入块只放写手读到的那几行（计满 2KB），
+        # 核对报告点名全部漏项（不再只数前 20 个编号），并拼好章末对作者说的原话。
+        (self.book / '.story-deployed').write_text('agents_version: 34\n', encoding='utf-8')
+        self.assertEqual(self.call('author_memory_commit.py', 'init', '--workspace', self.book).returncode, 0)
+        operations = [{'action': 'remember', 'preference': {
+            'kind': 'prose_style', 'scope': {'level': 'global', 'value': None},
+            'assertion': f'习惯{n:02d}：' + '写' * 36, 'quote': f'第{n}条习惯', 'source_ref': 'test',
+            'source': 'explicit_user', 'confidence': 'high', 'importance': 'medium', 'status': 'active',
+            'reason': '作者明确要求', 'conflicts_with': [],
+        }} for n in range(1, 41)]
+        memory_input = Path(self.tmp.name) / 'memory.json'
+        for revision, batch in enumerate((operations[:32], operations[32:])):  # 一份事务最多 32 条
+            memory_input.write_text(json.dumps({'schema_version': 1, 'transaction_id': f'flood-{revision}',
+                                                'expected_state_revision': revision, 'operations': batch},
+                                               ensure_ascii=False), encoding='utf-8')
+            committed = self.call('author_memory_commit.py', 'commit', '--workspace', self.book, '--input', memory_input)
+            self.assertEqual(committed.returncode, 0, committed.stdout + committed.stderr)
+        out = self.book / 'prompt.txt'
+        result = self.call('build_writer_prompt.py', '--project', self.book, '--chapter', 1, '--out', out)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        prompt = out.read_text(encoding='utf-8')
+        injected = [line for line in prompt.splitlines() if line.startswith('- 习惯')]
+        self.assertEqual(len(injected), 15)  # 每行 133 字节，2048 装 15 条；旧口径按 JSON 外壳只装 8 条
+        self.assertEqual(sum(len((line + '\n').encode('utf-8')) for line in injected) <= 2048, True)
+        # 同重要度按最近更新排：第二批（AP033-040）先装，第一批装到 AP007 为止
+        self.assertNotIn('习惯08：', prompt)
+        self.assertNotIn('没带上', prompt)  # 给作者的话只在核对报告里，不进写手 prompt
+        report = result.stdout.split('以下不进 prompt', 1)[1]
+        self.assertIn('这章没带上 25 条（AP008、', report)
+        self.assertIn('AP032）', report)
+        self.assertIn('你记下的写作习惯这章有 25 条没带上：「习惯08：写写写写写写写写写…」', report)
+        self.assertIn('「习惯15：写写写写写写写写写…」等；说「整理作者记忆」可以合并相近的、调低不常用的。', report)
+
+    def test_builder_merges_multi_genre_misses_by_importance(self):
+        # 本书两个题材各查一次再合并：某次漏、另一次带上的不算没带上；两次都带上的只注入一遍；
+        # 合并后的漏项按重要度排，后一次查询才漏的 high 习惯排在前一次漏的 low 习惯前面；不到 8 条不加「等」。
+        (self.book / '.story-deployed').write_text('agents_version: 34\n', encoding='utf-8')
+        self.put('设定/题材定位.md', '# 题材定位\n- 题材类型：都市 · 悬疑\n')
+        self.assertEqual(self.call('author_memory_commit.py', 'init', '--workspace', self.book).returncode, 0)
+
+        def op(assertion, importance, level='global', value=None):
+            return {'action': 'remember', 'preference': {
+                'kind': 'prose_style', 'scope': {'level': level, 'value': value}, 'assertion': assertion,
+                'quote': assertion, 'source_ref': 'test', 'source': 'explicit_user', 'confidence': 'high',
+                'importance': importance, 'status': 'active', 'reason': '作者明确要求', 'conflicts_with': [],
+            }}
+
+        first = ([op(f'全局低{n:02d}：' + '写' * 35, 'low') for n in range(1, 11)]  # AP001-010
+                 + [op('全局高：短句推进', 'high')]  # AP011
+                 + [op(f'悬疑高{n:02d}：' + '写' * 35, 'high', 'genre', '悬疑') for n in range(1, 9)])  # AP012-019
+        second = [op(f'都市高{n:02d}：' + '写' * 35, 'high', 'genre', '都市') for n in range(1, 17)]  # AP020-035
+        memory_input = Path(self.tmp.name) / 'memory.json'
+        for revision, batch in enumerate((first, second)):
+            memory_input.write_text(json.dumps({'schema_version': 1, 'transaction_id': f'genres-{revision}',
+                                                'expected_state_revision': revision, 'operations': batch},
+                                               ensure_ascii=False), encoding='utf-8')
+            committed = self.call('author_memory_commit.py', 'commit', '--workspace', self.book, '--input', memory_input)
+            self.assertEqual(committed.returncode, 0, committed.stdout + committed.stderr)
+        out = self.book / 'prompt.txt'
+        result = self.call('build_writer_prompt.py', '--project', self.book, '--chapter', 1, '--out', out)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        prompt = out.read_text(encoding='utf-8')
+        self.assertEqual(prompt.count('- 全局高：短句推进（AP011）'), 1)  # 两次查询都带上，只注入一遍
+        self.assertIn('- 全局低07：', prompt)  # 悬疑那次带上、都市那次漏掉：算带上了
+        report = result.stdout.split('以下不进 prompt', 1)[1]
+        self.assertIn('这章没带上 4 条（AP035、AP008、AP009、AP010）', report)
+        self.assertIn('你记下的写作习惯这章有 4 条没带上：「都市高16：写写写写写写写写…」「全局低08：', report)
+        self.assertIn('「全局低10：写写写写写写写写…」；说「整理作者记忆」', report)  # 不到 8 条不加「等」
+
+    def test_builder_keeps_misses_from_earlier_genre_query(self):
+        # 只有前一次查询才漏的本题材习惯，合并时不能被后一次查询的结果冲掉；
+        # 前一次挤掉、后一次带上的全局习惯不算没带上。
+        (self.book / '.story-deployed').write_text('agents_version: 34\n', encoding='utf-8')
+        self.put('设定/题材定位.md', '# 题材定位\n- 题材类型：都市 · 悬疑\n')
+        self.assertEqual(self.call('author_memory_commit.py', 'init', '--workspace', self.book).returncode, 0)
+
+        def op(assertion, importance, level='global', value=None):
+            return {'action': 'remember', 'preference': {
+                'kind': 'prose_style', 'scope': {'level': level, 'value': value}, 'assertion': assertion,
+                'quote': assertion, 'source_ref': 'test', 'source': 'explicit_user', 'confidence': 'high',
+                'importance': importance, 'status': 'active', 'reason': '作者明确要求', 'conflicts_with': [],
+            }}
+
+        first = ([op(f'全局低{n:02d}', 'low') for n in range(1, 5)]  # AP001-004，每行 25 字节
+                 + [op('全局高', 'high')]  # AP005
+                 + [op(f'悬疑高{n:02d}：' + '写' * 35, 'high', 'genre', '悬疑') for n in range(1, 17)])  # AP006-021
+        second = [op(f'都市高{n:02d}：' + '写' * 35, 'high', 'genre', '都市') for n in range(1, 6)]  # AP022-026
+        memory_input = Path(self.tmp.name) / 'memory.json'
+        for revision, batch in enumerate((first, second)):
+            memory_input.write_text(json.dumps({'schema_version': 1, 'transaction_id': f'early-{revision}',
+                                                'expected_state_revision': revision, 'operations': batch},
+                                               ensure_ascii=False), encoding='utf-8')
+            committed = self.call('author_memory_commit.py', 'commit', '--workspace', self.book, '--input', memory_input)
+            self.assertEqual(committed.returncode, 0, committed.stdout + committed.stderr)
+        result = self.build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = result.stdout.split('以下不进 prompt', 1)[1]
+        # 悬疑那次漏 AP021 与 AP002-004；都市那次全装下，AP002-004 算带上了
+        self.assertIn('这章没带上 1 条（AP021）', report)
+        self.assertIn('- 全局低04（AP004）', result.stdout)
+
+    def remember(self, workspace, assertion, *, book_root=None, level='global', value=None):
+        event = {'schema_version': 1, 'event_id': f'm-{assertion}', 'operation': {'action': 'remember', 'preference': {
+            'kind': 'prose_style', 'scope': {'level': level, 'value': value}, 'assertion': assertion,
+            'quote': assertion, 'source_ref': 'test', 'source': 'explicit_user', 'confidence': 'high',
+            'importance': 'high', 'status': 'active', 'reason': '作者明确要求', 'conflicts_with': [],
+        }}}
+        memory_input = Path(self.tmp.name) / 'memory.json'
+        memory_input.write_text(json.dumps(event, ensure_ascii=False), encoding='utf-8')
+        args = ['record', '--workspace', workspace, '--input', memory_input]
+        if book_root is not None:
+            args += ['--book-root', book_root]
+        recorded = self.call('author_memory_commit.py', *args)
+        self.assertEqual(recorded.returncode, 0, recorded.stdout + recorded.stderr)
+
+    def move_book(self, *parts):
+        target = Path(self.tmp.name).joinpath(*parts)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(self.book), str(target))
+        self.book = target
+        return target
+
+    def memory_files(self, root):
+        return sorted(str(p.relative_to(root)) for p in root.rglob('*') if '作者记忆' in str(p))
+
+    def test_builder_finds_workspace_without_deploy_marker(self):
+        # DSH 等宿主不写 .story-deployed：按 长篇/ 上一层、.active-book、拆文库/ 或项目级记忆认出工作区，
+        # 全局条目（项目级）与本书条目都要代查进来，不能退回主会话手查。
+        cases = [
+            ('长篇下的书', ('多书甲', '长篇', '雾港 来信'), None),
+            ('有 .active-book', ('多书乙', '雾港 来信'), '.active-book'),
+            ('有拆文库', ('多书丙', '雾港 来信'), '拆文库'),
+        ]
+        for name, parts, marker in cases:
+            with self.subTest(layout=name):
+                book = self.move_book(*parts)
+                workspace = Path(self.tmp.name) / parts[0]
+                if marker == '.active-book':
+                    (workspace / marker).write_text('雾港 来信\n', encoding='utf-8')
+                elif marker:
+                    (workspace / marker).mkdir()
+                # 先只有本书条目：工作区根还没有项目级记忆，只能靠 长篇/、.active-book、拆文库/ 认出来
+                self.remember(workspace, f'{name}：本书条目', book_root=book, level='book', value='雾港 来信')
+                result = self.build()
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(f'- {name}：本书条目（BP', result.stdout)
+                self.assertNotIn('脚本查询失败', result.stdout)
+                self.remember(workspace, f'{name}：全局条目')
+                result = self.build()
+                self.assertIn(f'- {name}：全局条目（AP', result.stdout)
+                self.assertIn(f'- {name}：本书条目（BP', result.stdout)
+
+    def test_builder_single_book_layout_without_deploy_marker(self):
+        # DSH 常用的单书布局：书根就是工作区，项目级与书级（书级/）两份记忆都在书目录下。
+        # 外层目录恰好有 拆文库/ 也不改认：项目级记忆所在的最近一层就是工作区。
+        self.move_book('外层', '雾港 来信')
+        (Path(self.tmp.name) / '外层' / '拆文库').mkdir()
+        # 先只有书级记忆（住在 书级/）：同样认书目录，否则本书条目会去外层找而丢失。
+        self.remember(self.book, '单书：本书条目', book_root=self.book, level='book', value='雾港 来信')
+        result = self.build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('- 单书：本书条目（BP001）', result.stdout)
+        self.remember(self.book, '单书：全局条目')
+        result = self.build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('- 单书：全局条目（AP001）', result.stdout)
+        self.assertIn('- 单书：本书条目（BP001）', result.stdout)
+
+    def test_builder_never_takes_book_under_long_dir_as_workspace(self):
+        # 长篇/ 下的书目录永远不当工作区：哪怕书的记忆目录里多了个 书级/（比如旧版误挪留下的空目录），
+        # 也要先按上一层叫 长篇 认出工作区，不能当成单书布局去查（作者记忆工具会直接报错）。
+        book = self.move_book('多书丁', '长篇', '雾港 来信')
+        workspace = book.parent.parent
+        self.remember(workspace, '长篇优先：本书条目', book_root=book, level='book', value='雾港 来信')
+        (book / '.story' / '作者记忆' / '书级').mkdir()
+        result = self.build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('- 长篇优先：本书条目（BP001）', result.stdout)
+        self.assertNotIn('脚本查询失败', result.stdout)
+
+    def test_builder_never_takes_home_as_workspace(self):
+        # 主目录本身不当工作区：主目录里误放的 .active-book 不能把书认到主目录去。
+        book = self.move_book('假主目录', '雾港 来信')
+        home = book.parent
+        (home / '.active-book').write_text('雾港 来信\n', encoding='utf-8')
+        self.remember(home, '主目录：本书条目', book_root=book, level='book', value='雾港 来信')
+        result = self.call('build_writer_prompt.py', '--project', self.book, '--chapter', 1,
+                           env={'HOME': str(home), 'USERPROFILE': str(home)})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('认不出创作工作区', result.stdout)
+
+    def test_builder_does_not_guess_workspace_over_book_memory(self):
+        # 书直接放在没有任何迹象的工作区下、只有书级记忆：拿书目录当工作区去查会被当成单书布局的旧版记忆
+        # 「归位」进 书级/，此后用正确工作区查询全部报错。认不出就不代查、零写入，交主会话定工作区。
+        book = self.move_book('无迹象工作区', '雾港 来信')
+        workspace = book.parent
+        self.remember(workspace, '无迹象：本书条目', book_root=book, level='book', value='雾港 来信')
+        before = self.memory_files(workspace)
+        result = self.build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('认不出创作工作区', result.stdout)
+        self.assertEqual(self.memory_files(workspace), before, '代查不得挪动书级记忆')
+        query = self.call('author_memory_commit.py', 'query', '--workspace', workspace, '--book-root', book,
+                          '--kind', 'prose_style')
+        self.assertEqual(query.returncode, 0, query.stdout + query.stderr)
+        self.assertEqual(json.loads(query.stdout)['lines'], ['- 无迹象：本书条目（BP001）'])
 
     def test_builder_queries_scoped_author_memory(self):
         (self.book / '.story-deployed').write_text('agents_version: 34\n', encoding='utf-8')
