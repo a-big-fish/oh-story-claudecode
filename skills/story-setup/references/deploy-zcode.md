@@ -1,14 +1,14 @@
 # ZCode 部署
 
-`target_cli` 含 `zcode` 时，由 SKILL.md Phase 2 完整读取并依次执行本文件。路径检查、幂等重跑、残留清理、部署标记、模板占位符、项目指令合并和报告遵循 SKILL.md 的公共规则。`references/zcode/` 提供 AGENTS、13 Commands、workspace config patch 与严格 JSON Hook runner。
+`target_cli` 含 `zcode` 时，由 SKILL.md Phase 2 完整读取并依次执行本文件。路径检查、幂等重跑、残留清理、部署标记、模板占位符、项目指令合并和报告遵循 SKILL.md 的公共规则。`references/zcode/` 提供 AGENTS、14 Commands、workspace config patch 与严格 JSON Hook runner。
 
 ## 部署清单（机械可检查）
 
 | Source path | Target path | Owner class | Merge mode | Validation check |
 |-------------|-------------|-------------|------------|------------------|
 | `skills/story-setup/references/zcode/AGENTS.md.tmpl` | `AGENTS.md` | user+managed | managed block merge | contains ZCode `$story-*` routing and solo fallback |
-| repository `skills/{browser-cdp,story*}/` | `.zcode/skills/{browser-cdp,story*}/` | story-setup managed for known skill names | replace known skill dirs only | 13 `SKILL.md` files exist and satisfy ZCode frontmatter limits |
-| `skills/story-setup/references/zcode/commands/` | `.zcode/commands/` | story-setup managed for known command names | replace known command files only | 13 commands have valid names/frontmatter |
+| repository `skills/{browser-cdp,story*}/` | `.zcode/skills/{browser-cdp,story*}/` | story-setup managed for known skill names | replace known skill dirs only | 14 `SKILL.md` files exist and satisfy ZCode frontmatter limits |
+| `skills/story-setup/references/zcode/commands/` | `.zcode/commands/` | story-setup managed for known command names | replace known command files only | 14 commands have valid names/frontmatter |
 | `skills/story-setup/references/zcode/hooks/story_zcode_hook.js` | `.zcode/hooks/story_zcode_hook.js` | story-setup managed | replace | Node syntax valid; hook contract tests pass |
 | `skills/story-setup/references/zcode/hooks/story_hook_core.js` | `.zcode/hooks/story_hook_core.js` | story-setup managed | replace | Node syntax valid; hook contract tests pass |
 | `skills/story-setup/references/zcode/config.json.patch` | merge into `.zcode/config.json` | user+managed | merge by event+matcher+process args | JSON valid; 按下方「ZCode 部署算法」第 4 步 hooks 互斥分支校验——未装 oh-story 插件时 `hooks.enabled=true`、only supported events；已装插件时校验 `.zcode/config.json` 不含（或已移除）这批 oh-story hooks 注册 |
@@ -21,8 +21,8 @@
 
 ZCode 首版部署 Skills、Commands、AGENTS.md 和支持事件内的 Hooks；部署时创建 `.zcode/`、合并根 `AGENTS.md`；不部署 `.zcode/agents` 或 `.zcode/rules`。
 
-1. 复制仓库当前 `skills/` 下 13 个包含 `SKILL.md` 的目录到 `.zcode/skills/{skill-name}/`；仅替换这些已知目录，保留用户其他 Skills。ZCode 只使用当前规范前缀 `.zcode/skills/` 查找 agent references，不在运行时遍历历史备选路径。
-2. 复制 `references/zcode/commands/*.md` 到 `.zcode/commands/`；仅替换 13 个同名命令，保留用户其他 Commands。
+1. 复制仓库当前 `skills/` 下 14 个包含 `SKILL.md` 的目录到 `.zcode/skills/{skill-name}/`；仅替换这些已知目录，保留用户其他 Skills。ZCode 只使用当前规范前缀 `.zcode/skills/` 查找 agent references，不在运行时遍历历史备选路径。
+2. 复制 `references/zcode/commands/*.md` 到 `.zcode/commands/`；仅替换 14 个同名命令，保留用户其他 Commands。
 3. 复制 `references/zcode/hooks/story_zcode_hook.js` 和 `references/zcode/hooks/story_hook_core.js` 到 `.zcode/hooks/`。
 4. 读取 `references/zcode/config.json.patch` 和现有 `.zcode/config.json`（如只有根 `zcode.json`，仍创建 `.zcode/config.json` 承载 oh-story 项目 Hooks，不改写根文件）：
    - 保留用户所有未知字段、MCP、plugins、skills/commands disable overrides；
@@ -37,7 +37,7 @@ Plugin 安装不经过本算法：仓库根 `.zcode-plugin/plugin.json` 直接�
 ## 验证
 
 - 检查根 `AGENTS.md` 含 ZCode `$story-*` 路由、大纲守卫和 solo/direct fallback
-- 检查 `.zcode/skills/` 下 13 个 Skills 与 `.zcode/commands/` 下 13 个 Commands，验证 frontmatter 和命名
+- 检查 `.zcode/skills/` 下 14 个 Skills 与 `.zcode/commands/` 下 14 个 Commands，验证 frontmatter 和命名
 - 检查 `.zcode/hooks/story_zcode_hook.js`、`.zcode/hooks/story_hook_core.js` 存在且 `node --check` 通过
 - 检查 `.zcode/config.json` JSON 有效，并按「ZCode 部署算法」第 4 步的 hooks 互斥分支校验：未装 oh-story 插件时，`hooks.enabled=true`、仅注册 ZCode 支持事件、所有 `process` args 指向项目 Hook；已装 oh-story 插件（`.zcode-plugin/plugin.json` 已全局注册这批 hooks）时，改为校验 `.zcode/config.json` 不含（或已移除）这批 oh-story hooks 注册——**不得**为了让校验通过而把 `config.json.patch` 的 hooks 块合并回去，否则同一事件双触发
 - 检查 `.zcode/skills/story-setup/references/agent-references/` 完整且所有 reference 路径可解析

@@ -25,7 +25,7 @@ EXPECTED_SKILLS = frozenset(
         "story-long-analyze",
         "story-long-scan",
         "story-long-write",
-        "story-publish-details",
+        "story-publish",
         "story-review",
         "story-setup",
         "story-short-analyze",

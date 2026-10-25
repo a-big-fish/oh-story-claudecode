@@ -107,7 +107,7 @@ Claude Code / ZCode 市场改为单一 `oh-story` 插件，仍包含全部 13 �
 
 旧版部署可能在项目里留下嵌套目录：`agent-references/agent-references/`（可能多层）或 `skills/story-setup/skills/`，严重时会撑满磁盘。新版部署会拒绝这种复制并自动删掉残留。
 
-OpenClaw、Reasonix 和通用模式把 skill 放在项目 `skills/` 里，重跑时执行的是项目里那份旧 skill，无法自动清理：先手动删掉上面两类目录，再用更新后的技能包覆盖项目 `skills/` 下的 13 个目录。
+OpenClaw、Reasonix 和通用模式把 skill 放在项目 `skills/` 里，重跑时执行的是项目里那份旧 skill，无法自动清理：先手动删掉上面两类目录，再用更新后的技能包覆盖项目 `skills/` 下的 14 个目录。
 
 ## 追踪模型迁移（v0.7.2 及更早的长篇项目必读）
 

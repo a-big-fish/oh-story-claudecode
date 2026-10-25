@@ -55,7 +55,7 @@
         "**/*"
       ],
       "maintainer": "worldwonderer",
-      "packageDigest": "7a02c03d073a7fe561b12ab29ee0b7c61654d70b16614469a2e241d1608aa754",
+      "packageDigest": "36e5b64bc3fff04b7e3edc9eac2af6dc44c343af9b890f0b97f974679228583d",
       "path": "skills/story",
       "publisher": "worldwonderer",
       "rebuildOn": [],
@@ -65,14 +65,14 @@
       },
       "runtimeDependsOn": [
         "bin:node",
-        "skill:worldwonderer/story-cover@1.1.12",
+        "skill:worldwonderer/story-cover@1.1.13",
         "skill:worldwonderer/story-deslop@1.1.36",
         "skill:worldwonderer/story-import@1.0.33",
         "skill:worldwonderer/story-long-analyze@1.1.31",
         "skill:worldwonderer/story-long-scan@1.1.23",
         "skill:worldwonderer/story-long-write@1.1.43",
-        "skill:worldwonderer/story-review@1.1.38",
-        "skill:worldwonderer/story-setup@1.1.40",
+        "skill:worldwonderer/story-review@1.1.39",
+        "skill:worldwonderer/story-setup@1.1.41",
         "skill:worldwonderer/story-short-analyze@1.1.27",
         "skill:worldwonderer/story-short-scan@1.1.20",
         "skill:worldwonderer/story-short-write@1.1.31"
@@ -85,7 +85,7 @@
         "chinese",
         "storytelling"
       ],
-      "version": "1.0.25"
+      "version": "1.0.26"
     },
     {
       "catalogMigration": true,
@@ -101,7 +101,7 @@
         "**/*"
       ],
       "maintainer": "worldwonderer",
-      "packageDigest": "ca899f32676a867b42c7c6882bf9af20cee1fa607dc88ab3d536e08915b9ae9a",
+      "packageDigest": "9d8b928e8541d03c7af1f7680540a0db776c041621d6387bd9ec7a509288fc59",
       "path": "skills/story-cover",
       "publisher": "worldwonderer",
       "rebuildOn": [],
@@ -120,7 +120,7 @@
         "chinese",
         "storytelling"
       ],
-      "version": "1.1.12"
+      "version": "1.1.13"
     },
     {
       "catalogMigration": true,
@@ -315,7 +315,7 @@
         "**/*"
       ],
       "maintainer": "worldwonderer",
-      "packageDigest": "ab4bd917f198472b542624816b92a799ceafa3947ed5db7ed08228b603456cd1",
+      "packageDigest": "01a8932222d7d28fa3cb90611407f6d7bc65c78099cb96c71ef0d58cc9cc6c98",
       "path": "skills/story-review",
       "publisher": "worldwonderer",
       "rebuildOn": [],
@@ -335,7 +335,7 @@
         "chinese",
         "storytelling"
       ],
-      "version": "1.1.38"
+      "version": "1.1.39"
     },
     {
       "catalogMigration": true,
@@ -351,7 +351,7 @@
         "**/*"
       ],
       "maintainer": "worldwonderer",
-      "packageDigest": "b3e88e55beebe639b106f55c60617e714feb5f955363406382e67317b6a970d0",
+      "packageDigest": "001b02535ad293b0529c16bd364535f16c00095feb007a9da205eee7a5b2ef0e",
       "path": "skills/story-setup",
       "publisher": "worldwonderer",
       "rebuildOn": [],
@@ -371,7 +371,7 @@
         "chinese",
         "storytelling"
       ],
-      "version": "1.1.40"
+      "version": "1.1.41"
     },
     {
       "catalogMigration": true,
@@ -483,22 +483,22 @@
         "agents",
         "knowledge"
       ],
-      "displayName": "story-publish-details：发布平台书籍资料",
+      "displayName": "story-publish：发布准备",
       "disposition": "excluded",
-      "excludeReason": "Fork-local skill extension; publisher identity and publication rights have not been reviewed.",
+      "excludeReason": "New skill publication identity and maintainer authorization remain under upstream review; bundled installs include it, standalone ClawHub story must handle its absence.",
       "include": [
         "**/*"
       ],
-      "maintainer": "a-big-fish",
-      "path": "skills/story-publish-details",
-      "publisher": "a-big-fish",
+      "maintainer": "worldwonderer",
+      "path": "skills/story-publish",
+      "publisher": "worldwonderer",
       "rebuildOn": [],
       "rights": {
-        "evidence": "User-provided local extension; external publication not requested.",
+        "evidence": "Pending upstream review of contributor authorization and publication identity.",
         "status": "unconfirmed"
       },
       "runtimeDependsOn": [],
-      "slug": "story-publish-details",
+      "slug": "story-publish",
       "supportedRuntimes": [],
       "topics": [
         "writing",

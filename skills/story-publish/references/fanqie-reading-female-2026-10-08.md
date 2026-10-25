@@ -1,9 +1,11 @@
 ---
 platform: 番茄小说
-version_updated: "2026-10-08"
-version_precision: "日期；具体时分未知"
-source_version: "2026.10.08"
-source_type: "用户提供的调研资料；非已核实的实时平台表单"
+source_snapshot_version: "2026-10-08"
+verified_on: "2026-10-25"
+backend_options_verified: true
+verified_scope: "2026-10-25 番茄作家专区 Web 创建作品页，小说女频；作者等级未提供"
+source_url: "https://fanqienovel.com/main/writer/create?enter_from=book_manage"
+source_type: "用户提供的 2026-10-08 候选项快照；2026-10-25 六张截图中女频三张逐项核对"
 section: 阅读标签
 reader_scope: 女频
 conditionally_required_groups: [主分类]
@@ -21,7 +23,11 @@ option_counts:
 
 # 女频阅读标签
 
-资料版本更新时间：**2026-10-08**。阅读标签整组可暂不填；仅在选择填写时，主分类须选一个。候选值按原资料保留，勿跨字段或目标读者分支复用。
+原资料版本 2026-10-08。2026-10-25 对照作者提供的女频三张完整裁剪图，逐项核对番茄作家专区 Web「创建作品 > 阅读标签」：主分类 21、主题 25、角色 41、情节 95，均与本页候选值一致。证据限于这一次网页入口；未核验 App、其他账号等级或作品类型。弹窗提示「主分类必选且只能选一个，主题、角色、情节最多可选两个，签约后不能修改」。
+
+入库的去账号截图：[主分类与主题](evidence/fanqie-web-female-reading-1.png)、[角色](evidence/fanqie-web-female-reading-2.png)、[情节](evidence/fanqie-web-female-reading-3.png)。
+
+后台核验日期：**2026-10-25（Asia/Shanghai）**；平台未给出本次标签更新日期。阅读标签弹窗内主分类必选，不能据此推定全部建书入口都要求立即打开此弹窗。候选值勿跨字段或目标读者分支复用。
 
 ## 主分类
 

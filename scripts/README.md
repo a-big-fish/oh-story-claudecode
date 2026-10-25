@@ -30,7 +30,7 @@
 | `check-python-invocation.sh` | 技能文档禁止裸调 `python3`（须 python3→python→py 探测） | CI |
 | `check-agent-notes.py` + `test-agent-notes.py` | `.agents/notes/` 决策笔记的目录布局（状态/分类/日期文件名）、`Status` 与目录一致、必需小节（Problem / Decision 或 Proposal / Alternatives considered / Consequences）、禁止手工索引；test 用临时目录逐类违规回归 | CI；新增或移动笔记后 |
 | `check-author-reports.py` | `<!-- author-report -->` 标记的作者报告模板里不许出现工程黑话：内部字段/状态名、脚本名、flag、snake/kebab 标识符、S1–S4、Gate、裸编号；块尾一行「技术备注：」豁免；登记文件（含长篇规划/单章/日更/大修模板）的报告块不得少于登记数量；`--self-test` 自带正反例 | CI；改报告模板后 |
-| `check-plugin-packaging.py` | Claude/ZCode 两个 catalog 与两个原生 manifest 的单 bundle 身份、版本、默认组件发现和 13 个根 Skills | CI；改 plugin packaging 后 |
+| `check-plugin-packaging.py` | Claude/ZCode 两个 catalog 与两个原生 manifest 的单 bundle 身份、版本、默认组件发现和 14 个根 Skills | CI；改 plugin packaging 后 |
 | `check-claude-adapter.sh` | Claude marketplace、根 plugin manifest 与 14 个 skill 自动发现；可选真实 CLI 生命周期 | CI（静态）；`CLAUDE_REAL_CHECK=1`（真实 CLI） |
 | `check-opencode-adapter.sh` | OpenCode 2.x 适配层同步 + commands/agents 结构 + 生成权限的 2.x 裁决矩阵 + plugin 行为回归 | CI + sync CI（调 sync-opencode.py） |
 | `check-openclaw-skills.sh` | OpenClaw AgentSkills/frontmatter 兼容性 | CI |
@@ -77,12 +77,12 @@
 | `test-zcode-hooks.sh` | ZCode 严格 JSON Hook、正文守卫与连续性回归 | CI |
 | `test-antigravity-hooks.mjs` | Antigravity 实际注册命令的 shell/字面 argv 兼容性（空格与中文项目路径）、Hook I/O、正文守卫、artifact 桥接与 Stop 单次续跑 | CI（Linux/Windows/macOS） |
 | `test-antigravity-hook-merge.py` | `.agents/hooks.json` 顶层 `oh-story` 管理组替换、用户组保留与幂等回归 | 被 `check-antigravity-adapter.sh` 调用 |
-| `test-antigravity-skills-deploy.py` | Antigravity 13 个已知 Skill 原子物化、未知 Skill 保留、symlink fail-closed/显式迁移与防穿透写回归 | 被 `check-antigravity-adapter.sh` 调用 |
+| `test-antigravity-skills-deploy.py` | Antigravity 14 个已知 Skill 原子物化、未知 Skill 保留、symlink fail-closed/显式迁移与防穿透写回归 | 被 `check-antigravity-adapter.sh` 调用 |
 | `test-charcount-portable.sh` | 跨平台字符统计命令在三平台 + Windows 的正确性 | CI（调 check-python-invocation） |
 | `test-hook-encoding-portable.sh` | 部署 hook 在 Windows 中文系统的编码健壮性 | CI |
 | `test-long-analyze-runtime.py` | 长篇拆文索引、旧成果直接使用/增强/续跑路由、旧章号与楔子对齐、无重叠原文块、批次提交与恢复、关系图中文字体回退 | CI；改 story-long-analyze 运行时后 |
 | `test-inspiration-index.py` | 三层灵感库索引：EM 卡登记幂等、专名泄漏拦截、NM/CBA 闭包与计数、卡内路径引用拒绝、标签检索 | CI；改 inspiration_index.py 或灵感库契约后 |
-| `test-opencode-cli-e2e.sh` | 真实 OpenCode 2.x CLI e2e：repo skills 发现 / 13 commands / 7 agents / 插件 active，并用 mock 模型在后台服务上验证写正文拦截、写后兜底与 compaction 注入 | CLI compatibility CI；需已安装 OpenCode 2.x（`@opencode/cli`） |
+| `test-opencode-cli-e2e.sh` | 真实 OpenCode 2.x CLI e2e：repo 14 skills 发现 / 14 commands / 7 agents / 插件 active，并用 mock 模型在后台服务上验证写正文拦截、写后兜底与 compaction 注入 | CLI compatibility CI；需已安装 OpenCode 2.x（`@opencode/cli`） |
 | `opencode-mock-llm.mjs` | OpenAI 兼容 mock 模型：按剧本文件发出工具调用并记录请求，供上面两个真实 OpenCode 测试驱动运行时 | 被 `test-opencode-cli-e2e.sh`、`test-agent-permissions.py --opencode` 调用 |
 | `test-skill-numbering.sh` | Step 重排级联安全、锚点 fail-closed、代码块引用、验证零写入/提交回滚、dry-run/write/幂等性 | Linux / Windows Git Bash / macOS CI |
 
@@ -95,7 +95,7 @@
 | `generate-codex-hooks.py` | 从 6 个 event 清单生成 `hooks.json`，POSIX/Windows 共用 launcher 负责解释器探测 | 改 Codex hook 注册后；被 check-codex-adapter 调验确定性 |
 | `skills/story-setup/scripts/generate-antigravity-agents.mjs` | 从 Claude agent 真源生成 Antigravity `.agents/agents/agent-name/agent.md`（`agent-name` 为实际名称），转换官方工具名、模型档、reference root 与调用术语 | story-setup 部署时 + 被 check-antigravity-adapter 调验 |
 | `skills/story-setup/scripts/merge-antigravity-hooks.py` | 原子替换 `.agents/hooks.json` 的 `oh-story` named group，保留所有用户 groups | story-setup 部署时 + merge 回归 |
-| `skills/story-setup/scripts/deploy-antigravity-skills.py` | 把 13 个 oh-story Skills 物化为项目 `.agents/skills` 真实目录；只替换已知名、保留用户 Skill，symlink 需显式迁移且不穿透写目标 | story-setup 部署时 + materialization 回归 |
+| `skills/story-setup/scripts/deploy-antigravity-skills.py` | 把 14 个 oh-story Skills 物化为项目 `.agents/skills` 真实目录；只替换已知名、保留用户 Skill，symlink 需显式迁移且不穿透写目标 | story-setup 部署时 + materialization 回归 |
 | `shared-assets.json` + `sync-shared-assets.py` | 为必须随 skill 独立部署的重复 runtime 脚本指定唯一源和目标 | 改共享 runtime 后跑 `sync`；CI 跑 `check` |
 | `shared-references.json` + `shared-references.py` | 为自包含 Skill 的重复 reference 指定 canonical source、语义别名 target 与完整目录镜像；`derived_groups` 登记仍需独立演化的近似派生文件 | 改共享 reference 后跑 `sync`；CI 跑 `check` |
 

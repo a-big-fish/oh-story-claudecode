@@ -85,7 +85,7 @@ sys.exit(0 if items and need <= have else 1)
   fail "OpenCode API returned no data: $*"
 }
 
-STORY_SKILLS="browser-cdp,story,story-cover,story-deslop,story-import,story-long-analyze,story-long-scan,story-long-write,story-review,story-setup,story-short-analyze,story-short-scan,story-short-write"
+STORY_SKILLS="browser-cdp,story,story-cover,story-deslop,story-import,story-long-analyze,story-long-scan,story-long-write,story-publish,story-review,story-setup,story-short-analyze,story-short-scan,story-short-write"
 
 echo "  Checking repo-local skill discovery"
 api_list "$REPO_ROOT" "$TMP_ROOT/repo-skills.json" "$STORY_SKILLS" GET /api/skill
@@ -103,6 +103,7 @@ expected = {
     "story-long-analyze",
     "story-long-scan",
     "story-long-write",
+    "story-publish",
     "story-review",
     "story-setup",
     "story-short-analyze",

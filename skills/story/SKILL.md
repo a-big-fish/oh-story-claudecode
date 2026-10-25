@@ -14,7 +14,7 @@ metadata: {"openclaw":{"source":"https://github.com/zenstory-ai/oh-story-claudec
 | 用户意图 | 关键词示例 | 路由到 |
 |---|---|---|
 | 长篇规划/写作 | 讨论长篇结构、规划剧情、开书规划、写大纲、补细纲、长篇、连载 | `/story-long-write` |
-| 发布平台建书资料 | 填写发布资料、建书表单、书名简介标签、开书页面、封面提示词与建书资料 | `/story-publish-details` |
+| 发布准备 | 填写发布资料、建书表单、书名简介标签、开书页面、封面提示词与建书资料 | `/story-publish` |
 | 写短篇 | 短篇、盐言、一万字 | `/story-short-write` |
 | 长篇拆文 | 拆文、分析这本书、黄金三章、灵感库、跨书灵感聚合 | `/story-long-analyze` |
 | 短篇拆文 | 拆短篇、分析这个故事 | `/story-short-analyze` |
@@ -40,7 +40,7 @@ metadata: {"openclaw":{"source":"https://github.com/zenstory-ai/oh-story-claudec
 
 只说 `/story`、看不出意图时，不贴路由表，给四个白话选项：「开一本长篇或接着写」→ `/story-long-write`；「写一篇短篇」→ `/story-short-write`；「把一章改得不那么 AI」→ `/story-deslop`；「更多（拆书、扫榜、导入旧稿、审稿、封面）」→ 再列进阶项。还没部署过（项目根没有 `.story-deployed`）时先建议 `/story-setup`，并说明部署完要新开一个会话再开始，写作助手才会生效。
 
-只说“帮我开书”而未说明交付物时，先问是要规划故事，还是填写发布平台的建书资料；后者走 `/story-publish-details`。
+只说“帮我开书”而未说明交付物时，先问是要规划故事，还是填写发布平台的建书资料；后者优先走 `/story-publish`。若当前宿主未安装或未发现该 skill（尤其 ClawHub 单独安装 `story` 时），明确告知无法调用并提示安装包含它的完整仓库技能包；不要假装已核验平台规则，也不要套用记忆里的标签。
 
 ### 导入续写顺序
 
@@ -162,6 +162,6 @@ cdp_port：{可选：Chrome 调试端口不是 9222 时写}
    - 在插件目录里（路径含 `plugins/`）：Claude Code 跑 `claude plugin marketplace update oh-story-skills` 再跑 `claude plugin update oh-story@oh-story-skills`，重启后生效；ZCode 在 Plugin Management 里刷新市场后更新 `oh-story`。
    - 用 `npx skills` 装在全局或当前目录：重跑 `npx skills add zenstory-ai/oh-story-claudecode -y -g`（原来装在当前目录的去掉 `-g`）。
    - 其他安装方式（如 ClawHub）：按原来的方式重装最新版。
-   - 本 skill 在写作项目里：先用上面对应的方式更新安装包，再用新装的包在项目根运行 `/story-setup`，项目里的副本才会换成新版；OpenClaw、Reasonix 和通用文件模式下项目里跑的就是这份旧副本，要用新包手动覆盖项目 `skills/` 下的 13 个 skill 目录。
+   - 本 skill 在写作项目里：先用上面对应的方式更新安装包，再用新装的包在项目根运行 `/story-setup`，项目里的副本才会换成新版；OpenClaw、Reasonix 和通用文件模式下项目里跑的就是这份旧副本，要用新包手动覆盖项目 `skills/` 下的 14 个 skill 目录。
 
    更新完提示：已部署过的项目在项目根重跑 `/story-setup` 同步 hooks、agents 和参考资料，然后**新开一个会话**，写作助手才会重新加载。

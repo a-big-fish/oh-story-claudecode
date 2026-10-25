@@ -296,7 +296,7 @@ flowchart LR
 | `story-short-scan` | `/story-short-scan` `/短篇扫榜` | 短篇扫榜 · 知乎盐言/番茄短篇风口数据 |
 | `story-import` | `/story-import` `/导入小说` | 逆向导入 · 将已有小说反向解析为标准项目结构 |
 | `story-review` | `/story-review` `/审查` | 多视角审查 · full / lean / solo 模式 + 番茄/起点/知乎评分标准 |
-| `story-publish-details` | `/story-publish-details` | 发布平台书籍资料 · 复用写作工程整理书名、简介、标签；番茄资料版本 2026-10-08 |
+| `story-publish` | `/story-publish` | 发布准备 · 复用写作工程整理书名、简介、标签；番茄 Web 创建作品页男/女频标签于 2026-10-25 核验，其他入口及提交校验待核实 |
 | `story-cover` | `/story-cover` `/封面` | 封面提示词或成图 · 成图调用 GPT-Image-2（Codex 内置用量 / API 回退） |
 | `browser-cdp` | `/browser-cdp` | 浏览器操控 · CDP 协议复用登录态抓取数据 |
 
@@ -304,7 +304,7 @@ flowchart LR
 
 自然语言同样触发：
 - 「帮我开书」→ 先确认是规划故事还是填写平台建书资料
-- 「整理番茄发布资料」→ `story-publish-details`
+- 「整理番茄发布资料」→ `story-publish`
 - 「这篇太 AI 了」→ `story-deslop`
 - 「把我的书导进来」→ `story-import`
 - 「打开工作台」→ `story dashboard`（本机浏览拆文库与写作项目，可轻量编辑）
