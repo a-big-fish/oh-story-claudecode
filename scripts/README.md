@@ -2,7 +2,7 @@
 
 这些是开发本仓库（skill 套件本体）用的**守卫 / 测试 / 代码生成**脚本，**不是** skill 运行时脚本（运行时脚本在各 skill 自己的 `scripts/` 下，如 `story-deslop/scripts/check-ai-patterns.js`，跨 skill 字节同步）。
 
-- 绝大多数由 CI 自动跑（`.github/workflows/cross-platform.yml`）。提交前本地一把梭的完整命令见 [CONTRIBUTING.md](../CONTRIBUTING.md)「CI 检查」。
+- 绝大多数由 CI 自动跑（`.github/workflows/cross-platform.yml`）。提交前完整的本地验证命令见 [CONTRIBUTING.md](../CONTRIBUTING.md)「CI 检查」。
 - **改名 / 移动任一脚本**，要同步改 `.github/workflows/*.yml`、`CONTRIBUTING.md`、本文件，以及调用它的兄弟脚本（见下方「何时跑」里的调用关系）。
 
 `python scripts/test-writer-pipeline.py` 验证长篇取段器与 prompt 组装器的公开 CLI：存量卷纲、作用域、退役历史、原生路径、必需资料与召回降档；在三平台 CI 运行。
@@ -63,6 +63,7 @@
 | `test-codex-hooks.sh` | Codex hook 合成 stdin/stdout 契约 | CI |
 | `test-static-check.py` | 真 frontmatter block、精确路径/锚点、跨 Skill 引用、fence、死 reference、Agent 与章节链接 fixture | CI |
 | `test-current-skill-contracts.py` | current-contract manifest 类型/固定值与主产物 fail-fast 语义 fixture | CI |
+| `test-handoff-contracts.py` | 拆文/扫榜产物与下游读取方的交接契约：拆文报告小节、黄金三章深度拆解字段、情绪模块卡门禁字段、节奏表列名、短篇节点字段、题材取值与 `_meta.json` 键、扫榜目标平台；导入卷纲与短篇设定过写作端的取段器和构思检查、写作端平台到审稿平台表、派助手的 prompt 字段、去味检测类别索引与写手任务标签；含反向自检（故意改坏输入必须报错） | CI |
 | `test-plugin-packaging.py` | 执行公开 packaging CLI，在临时仓库中变异 catalog/manifest/版本/组件过滤并断言结构化失败 | CI |
 | `test-claude-plugin-lifecycle.py` | 隔离 HOME 后用真实 Claude CLI 演练 13 个旧身份迁移为单 bundle、更新/卸载及无关插件保留 | `CLAUDE_REAL_CHECK=1`，由 `check-claude-adapter.sh` 调用 |
 | `test-shared-assets.py` | 共享资产 manifest 的 drift、sync、路径越界、basename 单一 owner 与未登记重复检测 | CI |

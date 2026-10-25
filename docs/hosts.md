@@ -2,7 +2,7 @@
 
 [English](hosts_EN.md)
 
-Oh Story 支持 8 款编程 Agent。本页是各 Agent 的部署细节、已知限制和安装排查；
+Oh Story 为 7 款编程 Agent 提供部署适配，另支持 Web AI / 通用文件模式。本页说明各宿主的部署条件、限制与安装排查；
 日常使用只需 README 的[安装](../README.md#安装)一节。
 
 ## 安装排查：Windows 报错、环境检查、marketplace 路径
@@ -60,6 +60,8 @@ repo 内直接使用：Codex 会扫描 `$REPO_ROOT/.agents/skills`（指向 `ski
 
 **多 agent 协作要先部署再新开会话：** 7 个专业 agent（story-architect、narrative-writer、consistency-checker 等）由 `/story-setup` 写入项目 `.claude/agents/`，由 `$story-setup` 写入 `.codex/agents/*.toml`，或由 Antigravity `story-setup` 生成 `.agents/agents/agent-name/agent.md`（`agent-name` 替换为实际名称）。Antigravity 使用 `invoke_subagent` + 同名 `TypeName`；运行时未暴露 custom subagent 时按 skill 明确降级 solo/direct。判断是否生效：新会话里跑 `/story-review`，报告开头「这次怎么审的」写着几个视角（完整审或精简审）即注册成功；写着「我一个人审」说明还在旧会话，或当前运行时未暴露该 agent。
 
-**导入续写顺序：** 推荐先在写作项目根运行 `/story-setup`（部署 hooks/agents/AGENTS），新开/刷新会话后运行 `/story-import` 导入已有小说，再用 `/story-long-write 日更` 或 `/story-long-write 写第N章` 续写。也可以直接运行 `/story-import`；它会先检测是否已 setup，未部署时让你选择先去 setup 或继续串行导入。
+**导入续写顺序：** 推荐先在写作项目根运行 `/story-setup`（部署 hooks/agents/AGENTS），新开/刷新会话后运行 `/story-import` 导入已有小说，再用 `/story-long-write 写第N章` 续写（N 是导入后的下一章，会先补这一章的细纲）。也可以直接运行 `/story-import`；它会先检测是否已 setup，未部署时让你选择先去 setup 或继续串行导入。
 
-**作者习惯会跨会话延续：** 对 `/story` 说“记住我的写作习惯”（部署后的项目里直接说「记住：……」也会走这里，不进编程工具自带的记忆）。作者记忆分两级：全局、题材、流程类偏好进工作区 `.story/作者记忆/`（编号 `AP`），只属于某本书的偏好进该书目录下的 `.story/作者记忆/`（编号 `BP`），随书归档、迁移；看到 `Author Memory Receipt` 才算写入成功。普通写作只查询本次相关的已确认条目，交给写手的习惯原文每次查询不超过 2KB，装不下的会在章末汇报里用原话告诉作者；不把完整画像、候选和历史塞进正文 prompt。它与每本书的剧情追踪分开，当前要求、本书设定和硬性门禁始终优先。
+**作者习惯由写作流程管理：** `story-long-write` 与 `story-short-write` 负责记录、确认、整理和按需查询作者记忆。可以直接向写作 skill 提要求，也可以对 `/story` 说“记住我的写作习惯”，由它路由到对应写作 skill；部署后的项目里直接说「记住：……」同样走写作流程，不进编程工具自带的记忆。去 AI 味与审查沿用写作流程传入的文风要求。
+
+作者记忆分两级：全局、题材、流程类偏好进工作区 `.story/作者记忆/`（编号 `AP`），只属于某本书的偏好进该书目录下的 `.story/作者记忆/`（编号 `BP`），随书归档、迁移；看到 `Author Memory Receipt` 才算写入成功。普通写作只查询本次相关的已确认条目，交给写手的习惯原文每次查询不超过 2KB，装不下的会在章末汇报里用原话告诉作者；不把完整画像、候选和历史塞进正文 prompt。它与每本书的剧情追踪分开，当前要求、本书设定和硬性门禁始终优先。

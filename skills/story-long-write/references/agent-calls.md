@@ -1,6 +1,6 @@
 # agent-calls.md：spawn 子代理的调用方式
 
-只在要 spawn 对应 agent 时读；主会话自己写正文、自己排纲时不读。何时调用由各流程文件决定，这里只放 prompt 与必须附带的内容。Antigravity 用 `invoke_subagent` + 同名 `TypeName`。
+只在要 spawn 对应 agent 时读；主会话自己写正文、自己排纲时不读。调用时机见各流程；下列 prompt 列明必传内容。Antigravity 用 `invoke_subagent` + 同名 `TypeName`。
 
 ## narrative-writer：写一章
 
@@ -28,7 +28,7 @@ Prompt：`项目目录：{dir}\n检查范围：{本次写作的章节}\n检查�
 
 ## narrative-writer：审查+去AI味
 
-Prompt：`项目目录：{dir}\n任务描述：审查+去AI味\n检查分工：你负责语义去味及原定自检；最终文件扫描由主会话执行\n检查范围：{本次写作的章节}\n文风路径：{设定/文风.md 全文路径}\nstyle_resolution：{与写作一致的裁决}\n作者偏好：{本章 query 输出的 lines，无写「无」}\n触发本次审查的检测结果：{chapter check 里 blocking 与语义类 advisory 的行号和类别，原样粘贴}\n所选 Gate：{按检测类别选，如 B 句式、G 解释腔；类别不明写 A-G}\n删除优先：每条 AI 味项先判能否删除，删后不丢伏笔/钩子/角色/情节/必要信息的直接删，会丢才润色\n按你的 7 Gate 与对话自检执行，台词里的工整否定不因脚本豁免而跳过\n删除测试：按 deslop-gates.md「写法抽查」执行，报告列候选数/删改数/保留理由`
+Prompt：`项目目录：{dir}\n任务描述：审查+去AI味\n检查分工：你负责本次检测触发的定点语义修复及原定自检；最终文件扫描由主会话执行\n检查范围：{本次写作的章节}\n文风路径：{设定/文风.md 全文路径}\nstyle_resolution：{与写作一致的裁决}\n作者偏好：{本章 query 输出的 lines，无写「无」}\n触发本次审查的检测结果：{chapter check 里 blocking 与语义类 advisory 的行号和类别，照录}\n执行边界：按写手资料 deslop-gates「按检测类别或问题限定范围」与三层方法修复；不扩大为完整故事诊断或新增剧情设计；原文有依据的承接与详略可改，无依据的设计缺口只报告\n验收：在完整场景中复读改动，说明原文问题、具体修法和有功能写法的保留理由，不用固定删减率`
 
 ## narrative-writer：超字一次净删（compress-once）
 
