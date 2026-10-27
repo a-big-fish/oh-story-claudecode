@@ -36,7 +36,7 @@ repo 内直接使用：Codex 会扫描 `$REPO_ROOT/.agents/skills`（指向 `ski
 
 ## ZCode
 
-在 Plugin Management 中添加本仓库，安装 `oh-story`，即可调用全部 13 个 Skills/Commands。市场名可能显示 `oh-story-zcode`（根 catalog）或 `oh-story-skills`（Claude catalog）；选择其中一个即可，内容相同。旧版多条目安装按[升级指南](../skills/story-setup/UPGRADING.md#插件打包身份迁移v079-同版本修复)迁移。`$story-setup` 选择 `target_cli=zcode` 会部署 `.zcode/skills/`、`.zcode/commands/`、`.zcode/hooks/story_zcode_hook.js`，安全合并 `.zcode/config.json` 与根 `AGENTS.md`；Hook 依赖 PATH 中的 `node`。ZCode 3.3.4 不执行项目/plugin custom agents，也没有 `PreCompact` / `SessionEnd`，相关流程会明确降级 solo/direct，compact 后由 `SessionStart` 恢复上下文。插件格式见 [ZCode 官方文档](https://zcode.z.ai/en/docs/plugin)。
+在 Plugin Management 中添加本仓库，安装 `oh-story`，即可调用全部 13 个 Skills/Commands。市场名可能显示 `oh-story-zcode`（根 catalog）或 `oh-story-skills`（Claude catalog）；选择其中一个即可，内容相同。旧版多条目安装按[升级指南](../skills/story-setup/UPGRADING.md#插件打包身份迁移v079-同版本修复)迁移。`$story-setup` 选择 `target_cli=zcode` 会部署 `.zcode/skills/`、`.zcode/commands/`、`.zcode/hooks/story_zcode_hook.js`，安全合并 `.zcode/config.json` 与根 `AGENTS.md`；Hook 依赖 PATH 中的 `node`。当前 ZCode 支持插件子代理；oh-story 插件注册 7 个专业角色，按当前 `Agent` 工具派发，只有角色或工具不可用时才降级。独立安装 Skills 不会注册这些角色，需启用插件；不创建 `.zcode/agents/` 或写入用户 home。升级插件后重新运行 `$story-setup` 更新项目快照和旧 AGENTS 指令，再新开会话。现有 Hook 适配不注册 `PreCompact` / `SessionEnd`，compact 后由 `SessionStart` 恢复上下文。见 [ZCode 插件](https://zcode.z.ai/en/docs/plugin)与[子代理文档](https://zcode.z.ai/en/docs/subagents)。
 
 ## OpenCode
 

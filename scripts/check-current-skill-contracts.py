@@ -800,11 +800,11 @@ def spawn_preflight_findings(
 
     版本不匹配只提示、不阻断：bump 的原因常常是别的部署物变了而 agent 模板根本没动
     （v23 就只改了 story-explorer），硬闸会让所有人为无关变更付并行代价。真正该降级的
-    信号是 agent 文件缺失或运行时不暴露 custom agent。
+    信号是当前宿主角色缺失或运行时不暴露调用能力；插件角色不要求项目文件。
     """
 
     current = str(manifest.agents_version)
-    fallback_pattern = r"只有 agent 文件缺失、或运行时不暴露 custom agent 时才降级 solo/direct"
+    fallback_pattern = r"只有当前宿主角色缺失或不暴露调用能力时才降级 solo/direct"
     if path.as_posix().endswith("skills/story-review/SKILL.md"):
         fallback_pattern = (
             r"版本提示本身不触发降级；文件缺失或异常、工具不可用、递归限制或调用失败按 Phase 0 处理"
@@ -812,7 +812,7 @@ def spawn_preflight_findings(
     required = (
         (r"`agents_version:\s*{}`".format(current), "pin the current agents_version"),
         (
-            r"照常按文件存在性检查并 spawn",
+            r"照常按当前宿主角色来源检查并 spawn",
             "state that a version mismatch does not block spawn",
         ),
         (

@@ -12,6 +12,21 @@ compare 链接；小节名使用 Keep a Changelog 的六个英文类别（`Added
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-26
+
+> 本版 `agents_version: 37`、`setup_skill_version: 1.3.5`。更新技能包后，在写作项目根重跑 `/story-setup`（Codex 用 `$story-setup`），再新开会话。ZCode 请先在 Plugin Management 更新并启用 `oh-story`，再从新版插件运行 story-setup，避免项目旧快照遮蔽更新；只安装独立 Skills 不会注册插件助手。书稿、设定、追踪和作者记忆无需迁移。
+
+v0.9.1 修复 ZCode 专业助手的注册与调度、Windows 写作守卫的 Git 控制台闪窗，并扩大续写状态卡的活跃角色数量。
+
+### Changed
+
+- **续写状态卡的活跃角色上限由 6 人提高到 20 人。** 状态卡只列下一章出场或被直接牵动的核心角色，其余核心角色仍保留快照、按需读取；既有字节上限和追踪数据格式不变。
+
+### Fixed
+
+- **ZCode 可以调用插件中的七个专业助手。** `oh-story` 插件注册写作、排纲、角色设计、一致性检查、拆文、资料检索和研究角色；写作、导入、审稿与查资料按当前已注册角色派发，不再因为 ZCode 宿主或项目目录存在而固定降级。角色或调用工具不可用时仍由主会话接手。
+- **Windows 后台写作守卫隐藏 Git 控制台窗口。** OpenCode 的项目定位、压缩前 Git 统计和共享提交检查为子进程启用隐藏窗口选项，保留原有守卫与返回行为。
+
 ## [0.9.0] - 2026-10-17
 
 > 本版 `agents_version: 36`、`setup_skill_version: 1.3.4`。已有项目更新技能包后，在项目根重跑 `/story-setup`（Codex 用 `$story-setup`），再新开会话：助手模板、项目指令和参考资料包要一起更新，不重跑的话旧助手会去找已经删掉的资料。书稿、设定、追踪和作者记忆不用迁移；之前导入的长篇要重写导入时的旧章，先让 `/story-long-write` 把那一卷的旧剧情单元改写成单元卡。
@@ -1293,7 +1308,8 @@ npx skills add zenstory-ai/oh-story-claudecode -y -g
 - 初始版本：长篇/短篇写作、拆文、扫榜、去 AI 味、浏览器操控
 - 用 52000+ 本真实数据增强知识库
 
-[Unreleased]: https://github.com/zenstory-ai/oh-story-claudecode/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/zenstory-ai/oh-story-claudecode/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/zenstory-ai/oh-story-claudecode/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/zenstory-ai/oh-story-claudecode/compare/v0.8.6...v0.9.0
 [0.8.6]: https://github.com/zenstory-ai/oh-story-claudecode/compare/v0.8.5...v0.8.6
 [0.8.5]: https://github.com/zenstory-ai/oh-story-claudecode/compare/v0.8.4...v0.8.5
