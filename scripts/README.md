@@ -44,6 +44,8 @@
 
 ## 测试回归（test-*）
 
+`python scripts/test-publish-format.py` 回归发布资料的书名十五字符与中文符号、固定顺序、封面代码块、标签分行、长篇/短故事字段分流、短故事分类归属与总计八项，以及中文路径 CLI 的只读行为。无需宿主 CLI 或网络，已接入三平台 CI；通过不代表平台提交或账号权限核验完成。
+
 | 脚本 | 测什么 | 何时跑 |
 |---|---|---|
 | `test-ai-patterns.sh` | 确定性 AI 句式检测器 `check-ai-patterns.js` 回归 | CI |

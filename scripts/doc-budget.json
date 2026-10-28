@@ -17,13 +17,18 @@
     },
     {
       "path": "skills/story-publish/references/fanqie-2026-10-08.md",
-      "budget": 3350,
-      "why": "番茄平台索引；区分标签截图核验、作者约束与阶段报告。2026-10-28 新增阶段入口及签约模式字段澄清，保留独立核验范围。"
+      "budget": 3500,
+      "why": "番茄平台索引；区分标签截图核验、作者约束与阶段报告。2026-10-28 新增阶段入口及签约模式字段澄清，保留独立核验范围。 2026-10-28 增加短故事分支索引。"
     },
     {
       "path": "skills/story-publish/references/fanqie-stages-2026-10-28.md",
-      "budget": 3900,
-      "why": "账号、作品类型与三阶段必填依据；2026-10-28 V1.2 区分证据层级并新增 Web 管理入口及 E01–E08 缺口跟踪，防止跨阶段套用。"
+      "budget": 4600,
+      "why": "账号、作品类型与三阶段必填依据；2026-10-28 V1.2 区分证据层级并新增 Web 管理入口及 E01–E08 缺口跟踪，防止跨阶段套用。 补记自动书名、默认连载、修改页和 AI 状态差异，不保存私人截图。"
+    },
+    {
+      "path": "skills/story-publish/references/fanqie-short-2026-10-28.md",
+      "budget": 1900,
+      "why": "2026-10-28 六张获准公开的截图、102 个短故事分类与独立输出契约；仅短故事按需读取。"
     },
     {
       "path": "skills/story-publish/references/fanqie-reading-male-2026-10-08.md",
@@ -333,22 +338,28 @@
         {
           "label": "基础资料",
           "files": [],
-          "budget": 12450
+          "budget": 13390
         },
         {
           "label": "男频阅读标签",
-          "files": ["skills/story-publish/references/fanqie-reading-male-2026-10-08.md"],
-          "budget": 14050
+          "files": [
+            "skills/story-publish/references/fanqie-reading-male-2026-10-08.md"
+          ],
+          "budget": 14952
         },
         {
           "label": "女频阅读标签",
-          "files": ["skills/story-publish/references/fanqie-reading-female-2026-10-08.md"],
-          "budget": 14150
+          "files": [
+            "skills/story-publish/references/fanqie-reading-female-2026-10-08.md"
+          ],
+          "budget": 15030
         },
         {
           "label": "内容标签",
-          "files": ["skills/story-publish/references/fanqie-content-tags-2026-10-08.md"],
-          "budget": 15050
+          "files": [
+            "skills/story-publish/references/fanqie-content-tags-2026-10-08.md"
+          ],
+          "budget": 15994
         },
         {
           "label": "封面方案",
@@ -356,24 +367,78 @@
             "skills/story-cover/SKILL.md",
             "skills/story-cover/references/cover-styles.md"
           ],
-          "budget": 24400
+          "budget": 25199
         },
         {
           "label": "封面API回退",
-          "files": ["skills/story-cover/references/api-fallback.md"],
-          "budget": 15750
+          "files": [
+            "skills/story-cover/references/api-fallback.md"
+          ],
+          "budget": 16648
         }
       ],
       "stacking": {
-        "budget": 32000,
+        "budget": 32701,
         "slots": [
-          ["男频阅读标签", "女频阅读标签"],
-          ["内容标签"],
-          ["封面方案"],
-          ["封面API回退"]
+          [
+            "男频阅读标签",
+            "女频阅读标签"
+          ],
+          [
+            "内容标签"
+          ],
+          [
+            "封面方案"
+          ],
+          [
+            "封面API回退"
+          ]
         ]
       },
-      "why": "固定输出与检查；男/女频互斥，内容标签、封面与风格参考可叠加，作者指定 API 回退时再读 API 参考。2026-10-28 将阶段报告列为必读并澄清签约模式，V1.2 补 Web 入口和证据跟踪，共增加 4200 字；保留两万字提醒和作者书名约束。宿主外置工具说明不计入。"
+      "why": "固定输出与检查；男/女频互斥，内容标签、封面与风格参考可叠加，作者指定 API 回退时再读 API 参考。2026-10-28 将阶段报告列为必读并澄清签约模式，V1.2 补 Web 入口和证据跟踪，共增加 4200 字；保留两万字提醒和作者书名约束。宿主外置工具说明不计入。 补充先写章节入口的脱敏观察及适用边界，各路径增加 700 字。 2026-10-28 按最终文件实测重新锁定预算；短故事分独立路径，不与长篇标签叠加。"
+    },
+    {
+      "label": "番茄短故事发布准备",
+      "files": [
+        "skills/story-publish/SKILL.md",
+        "skills/story-publish/references/fanqie-2026-10-08.md",
+        "skills/story-publish/references/fanqie-stages-2026-10-28.md",
+        "skills/story-publish/references/fanqie-short-2026-10-28.md"
+      ],
+      "branches": [
+        {
+          "label": "基础资料",
+          "files": [],
+          "budget": 15170
+        },
+        {
+          "label": "封面方案",
+          "files": [
+            "skills/story-cover/SKILL.md",
+            "skills/story-cover/references/cover-styles.md"
+          ],
+          "budget": 26979
+        },
+        {
+          "label": "封面API回退",
+          "files": [
+            "skills/story-cover/references/api-fallback.md"
+          ],
+          "budget": 18428
+        }
+      ],
+      "stacking": {
+        "budget": 30237,
+        "slots": [
+          [
+            "封面方案"
+          ],
+          [
+            "封面API回退"
+          ]
+        ]
+      },
+      "why": "短故事与长篇互斥，仅加载独立分类参考；封面风格与显式指定的 API 回退可能同轮读取，登记叠加，保持 35K 硬上限。"
     },
     {
       "label": "长篇日更主会话（写手代写）",
