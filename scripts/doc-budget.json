@@ -12,13 +12,18 @@
   "files": [
     {
       "path": "skills/story-publish/SKILL.md",
-      "budget": 5100,
-      "why": "发布平台书籍资料入口；约束已确认事实、带版本平台选项、书目录定位与覆盖保护。2026-10-27：输出顺序、格式校验与封面能力检测/作者模式确认需随入口读取，显式增加预算。"
+      "budget": 5400,
+      "why": "发布平台书籍资料入口；约束已确认事实、带版本平台选项、书目录定位与覆盖保护。2026-10-27：输出顺序、格式校验与封面模式确认随入口读取；补充两万字提醒及作者要求的中文符号、十五字符书名预检，显式增加预算。"
     },
     {
       "path": "skills/story-publish/references/fanqie-2026-10-08.md",
-      "budget": 2850,
-      "why": "番茄平台适配索引；每次使用番茄资料时读取官方来源、实际核验日期、适用条件与阶段区分。"
+      "budget": 3350,
+      "why": "番茄平台索引；区分标签截图核验、作者约束与阶段报告。2026-10-28 新增阶段入口及签约模式字段澄清，保留独立核验范围。"
+    },
+    {
+      "path": "skills/story-publish/references/fanqie-stages-2026-10-28.md",
+      "budget": 3900,
+      "why": "账号、作品类型与三阶段必填依据；2026-10-28 V1.2 区分证据层级并新增 Web 管理入口及 E01–E08 缺口跟踪，防止跨阶段套用。"
     },
     {
       "path": "skills/story-publish/references/fanqie-reading-male-2026-10-08.md",
@@ -321,28 +326,29 @@
       "label": "番茄发布准备",
       "files": [
         "skills/story-publish/SKILL.md",
-        "skills/story-publish/references/fanqie-2026-10-08.md"
+        "skills/story-publish/references/fanqie-2026-10-08.md",
+        "skills/story-publish/references/fanqie-stages-2026-10-28.md"
       ],
       "branches": [
         {
           "label": "基础资料",
           "files": [],
-          "budget": 7850
+          "budget": 12450
         },
         {
           "label": "男频阅读标签",
           "files": ["skills/story-publish/references/fanqie-reading-male-2026-10-08.md"],
-          "budget": 9450
+          "budget": 14050
         },
         {
           "label": "女频阅读标签",
           "files": ["skills/story-publish/references/fanqie-reading-female-2026-10-08.md"],
-          "budget": 9550
+          "budget": 14150
         },
         {
           "label": "内容标签",
           "files": ["skills/story-publish/references/fanqie-content-tags-2026-10-08.md"],
-          "budget": 10450
+          "budget": 15050
         },
         {
           "label": "封面方案",
@@ -350,16 +356,16 @@
             "skills/story-cover/SKILL.md",
             "skills/story-cover/references/cover-styles.md"
           ],
-          "budget": 19800
+          "budget": 24400
         },
         {
           "label": "封面API回退",
           "files": ["skills/story-cover/references/api-fallback.md"],
-          "budget": 11150
+          "budget": 15750
         }
       ],
       "stacking": {
-        "budget": 27400,
+        "budget": 32000,
         "slots": [
           ["男频阅读标签", "女频阅读标签"],
           ["内容标签"],
@@ -367,7 +373,7 @@
           ["封面API回退"]
         ]
       },
-      "why": "2026-10-27：发布资料固定顺序并执行格式检查；确认书名简介后检测封面能力并请作者选模式。男/女频标签互斥，内容标签、封面入口与风格参考可叠加；API 参考仅在作者指定回退时与封面方案同读。计入完整仓库内读取链；宿主外置生图工具说明不计入仓库资料。"
+      "why": "固定输出与检查；男/女频互斥，内容标签、封面与风格参考可叠加，作者指定 API 回退时再读 API 参考。2026-10-28 将阶段报告列为必读并澄清签约模式，V1.2 补 Web 入口和证据跟踪，共增加 4200 字；保留两万字提醒和作者书名约束。宿主外置工具说明不计入。"
     },
     {
       "label": "长篇日更主会话（写手代写）",

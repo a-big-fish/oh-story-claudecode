@@ -4,6 +4,11 @@ import argparse
 from pathlib import Path
 import re
 import sys
+import unicodedata
+
+
+TITLE_MAX_CHARS = 15
+CHINESE_SYMBOLS = frozenset("，。！？；：、（）【】《》〈〉「」『』“”‘’〔〕［］｛｝—…·～％＃＆＠＊＋－／＝＜＞｜＿￥")
 
 
 SECTIONS = [
@@ -19,6 +24,22 @@ TAG_FIELDS = {
     "阅读标签": ["主分类", "主题", "角色", "情节"],
     "内容标签": ["情节", "情感", "人设", "世界观"],
 }
+
+
+def validate_title(title):
+    title = title.strip()
+    errors = []
+    if not title:
+        errors.append("书本名称不能为空。")
+    if len(title) > TITLE_MAX_CHARS:
+        errors.append(f"书本名称共 {len(title)} 个字符，最多允许 {TITLE_MAX_CHARS} 个；数字和符号也计数。")
+    invalid = list(dict.fromkeys(
+        char for char in title
+        if unicodedata.category(char)[0] in {"P", "S"} and char not in CHINESE_SYMBOLS
+    ))
+    if invalid:
+        errors.append("书本名称必须使用中文符号，不允许：" + "、".join(invalid) + "。")
+    return errors
 
 
 def validate(text):
@@ -44,6 +65,7 @@ def validate(text):
     ):
         errors.append("首个正文标题必须是 # 书本名称：<书名>，不能使用资料总标题。")
     else:
+        errors.extend(validate_title(headings[0][2].partition("：")[2]))
         metadata = [line for line in lines[: headings[0][0]] if line.strip()]
         if not metadata or any(not line.startswith("> ") for line in metadata):
             errors.append("书名前只能有引用块元信息和空行。")
@@ -96,7 +118,7 @@ def main():
         for error in errors:
             print(f"FAIL: {error}", file=sys.stderr)
         return 1
-    print("PASS: publishing document order and tag layout")
+    print("PASS: publishing document order, title and tag layout")
     return 0
 
 
