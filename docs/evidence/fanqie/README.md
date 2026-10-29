@@ -7,7 +7,7 @@
 | 日期 | 范围 | 证据 |
 | --- | --- | --- |
 | 2026-10-08 | 用户提供的《番茄小说开书必知》快照：长篇字段候选、选择上限、字数预检 | 无后台截图，不作为单独依据 |
-| 2026-10-25 | Web「作品管理 > 小说 > 创建作品」阅读标签（男频 154、女频 182）与内容标签（两频相同，355），逐项对照快照 | 下列 `fanqie-web-*.png`，已去掉账号信息；含账号名的原图未入库 |
+| 2026-10-25 | Web「作品管理 > 小说 > 创建作品」阅读标签（男频 154、女频 182）与内容标签（两频相同，356），逐项对照快照；2026-10-29 复数时补上了快照漏掉的人设「皇叔」 | 下列 `fanqie-web-*.png`，已去掉账号信息；含账号名的原图未入库 |
 | 2026-10-28 | 短故事分类五组 102 项与发布设置；测试账号 Lv.2、未发布草稿；入口 `https://fanqienovel.com/main/writer/short-manage` | 下列 `fanqie-short-*.png`，作者允许公开 |
 | 2026-10-28 | 账号资格与三阶段必填核查报告 V1.2（用户实测转述 + 公开资料，未独立登录复验） | [stage-report-v1.2.md](stage-report-v1.2.md) |
 
@@ -17,7 +17,7 @@
 
 - 男频阅读标签：`fanqie-web-male-reading-1..3.png`（主分类与主题、角色、情节）
 - 女频阅读标签：`fanqie-web-female-reading-1..3.png`
-- 内容标签：`fanqie-web-male-content-1..4.png`（情节、情感、人设、世界观）；`fanqie-web-female-content-1..5.png`（情节分上下两张）
+- 内容标签：`fanqie-web-male-content-1..4.png`（情节、情感、人设、世界观）；`fanqie-web-female-content-1..5.png`（1、2 都是完整的情节组，只是裁切宽度不同）
 - 短故事：`fanqie-short-{main,plot,character,emotion,background,settings}-2026-10-28.png`
 
 ## 官方来源

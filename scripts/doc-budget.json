@@ -12,12 +12,12 @@
   "files": [
     {
       "path": "skills/story-publish/SKILL.md",
-      "budget": 2600,
-      "why": "发布资料准备入口：状态与定稿原则、作品材料定位、封面交接、输出模板与格式检查；番茄规则只在参考文件里写一次。"
+      "budget": 3000,
+      "why": "发布资料准备入口：状态与定稿原则、作品材料定位、封面交接、输出模板与格式检查；番茄规则只在参考文件里写一次。发布资料文件是以后自动填表的格式契约（元信息、三种字段取值、文件名），随入口读。"
     },
     {
       "path": "skills/story-publish/references/fanqie.md",
-      "budget": 1200,
+      "budget": 1600,
       "why": "番茄字段规则与核验范围，每次必读；取证过程在 docs/evidence/fanqie/，不进运行时。"
     },
     {
@@ -37,7 +37,7 @@
     },
     {
       "path": "skills/story-publish/references/fanqie-short.md",
-      "budget": 1200,
+      "budget": 1300,
       "why": "短故事分类候选、发布设置与输出替换，只在短故事时读。"
     },
     {
@@ -334,21 +334,21 @@
           "files": [
             "skills/story-publish/references/fanqie-reading-male.md"
           ],
-          "budget": 4500
+          "budget": 5300
         },
         {
           "label": "女频阅读标签",
           "files": [
             "skills/story-publish/references/fanqie-reading-female.md"
           ],
-          "budget": 4600
+          "budget": 5400
         },
         {
           "label": "内容标签",
           "files": [
             "skills/story-publish/references/fanqie-content-tags.md"
           ],
-          "budget": 5300
+          "budget": 6100
         },
         {
           "label": "封面方案",
@@ -356,18 +356,18 @@
             "skills/story-cover/SKILL.md",
             "skills/story-cover/references/cover-styles.md"
           ],
-          "budget": 15300
+          "budget": 16100
         },
         {
           "label": "封面API回退",
           "files": [
             "skills/story-cover/references/api-fallback.md"
           ],
-          "budget": 7000
+          "budget": 7800
         }
       ],
       "stacking": {
-        "budget": 21000,
+        "budget": 21800,
         "slots": [
           [
             "男频阅读标签",
@@ -400,18 +400,18 @@
             "skills/story-cover/SKILL.md",
             "skills/story-cover/references/cover-styles.md"
           ],
-          "budget": 16400
+          "budget": 17300
         },
         {
           "label": "封面API回退",
           "files": [
             "skills/story-cover/references/api-fallback.md"
           ],
-          "budget": 8100
+          "budget": 9000
         }
       ],
       "stacking": {
-        "budget": 19700,
+        "budget": 20600,
         "slots": [
           [
             "封面方案"
