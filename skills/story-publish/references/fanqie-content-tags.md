@@ -1,33 +1,11 @@
 ---
 platform: 番茄小说
-source_snapshot_version: "2026-10-08"
 verified_on: "2026-10-25"
-backend_options_verified: true
-verified_scope: "2026-10-25 番茄作家专区 Web 创建作品页，小说男频与女频；作者等级未提供"
-source_type: "用户提供的 2026-10-08 候选项快照；2026-10-25 男频四张、女频五张后台裁剪图逐项核对"
-source_url: "https://fanqienovel.com/main/writer/create?enter_from=book_manage"
-section: 内容标签
-reader_scope: "男频和女频本次截图中的内容标签候选相同"
-required_groups: []
-selection_limits:
-  情节: 4
-  情感: 2
-  人设: 4
-  世界观: 1
-option_counts:
-  情节: 144
-  情感: 58
-  人设: 93
-  世界观: 60
 ---
 
-# 内容标签
+# 长篇内容标签
 
-原资料版本 2026-10-08。2026-10-25 对照作者提供的[番茄作家专区 Web 创建作品页](https://fanqienovel.com/main/writer/create?enter_from=book_manage)截图，男频、女频分别逐项核对：情节 144、情感 58、人设 93、世界观 60，均与本页候选值一致，两频本次显示相同。仅代表该网页入口、截图时刻和当前账号条件；未核验 App、其他账号等级或作品类型。弹窗提示四组最多分别选四、二、四、一项。
-
-后台核验日期：**2026-10-25（Asia/Shanghai）**；平台未给出本次标签更新日期。候选值勿跨字段复用。
-
-去账号截图：男频[情节](evidence/fanqie-web-male-content-1.png)、[情感](evidence/fanqie-web-male-content-2.png)、[人设](evidence/fanqie-web-male-content-3.png)、[世界观](evidence/fanqie-web-male-content-4.png)；女频[情节上](evidence/fanqie-web-female-content-1.png)、[情节下](evidence/fanqie-web-female-content-2.png)、[情感](evidence/fanqie-web-female-content-3.png)、[人设](evidence/fanqie-web-female-content-4.png)、[世界观](evidence/fanqie-web-female-content-5.png)。
+2026-10-25 对照 Web 创建作品弹窗截图逐项核对（男频、女频相同）。只用本页候选值；同名候选在不同字段里不通用，也不跨频道或给短故事用。
 
 ## 情节
 

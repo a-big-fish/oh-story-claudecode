@@ -13,8 +13,8 @@ metadata: {"openclaw":{"source":"https://github.com/zenstory-ai/oh-story-claudec
 
 | 用户意图 | 关键词示例 | 路由到 |
 |---|---|---|
-| 长篇规划/写作 | 讨论长篇结构、规划剧情、开书规划、写大纲、补细纲、长篇、连载 | `/story-long-write` |
-| 发布准备 | 填写发布资料、建书表单、书名简介标签、开书页面、封面提示词与建书资料 | `/story-publish` |
+| 长篇规划/写作 | 讨论长篇结构、规划剧情、开书、写大纲、补细纲、长篇、连载 | `/story-long-write` |
+| 发布准备 | 发布资料、建书表单、平台书名简介标签、建书资料 | `/story-publish` |
 | 写短篇 | 短篇、盐言、一万字 | `/story-short-write` |
 | 长篇拆文 | 拆文、分析这本书、黄金三章、灵感库、跨书灵感聚合 | `/story-long-analyze` |
 | 短篇拆文 | 拆短篇、分析这个故事 | `/story-short-analyze` |
@@ -23,7 +23,7 @@ metadata: {"openclaw":{"source":"https://github.com/zenstory-ai/oh-story-claudec
 | 选题决策 | 写什么能爆、帮我选题、选题方向 | 长篇 `/story-long-scan`，短篇 `/story-short-scan`；没说篇幅先问一句 |
 | 去 AI 味 | 去 AI 味、太 AI、去味 | `/story-deslop` |
 | 审查稿件 | 审查、审稿、帮我审一下、一致性检查、看看有没有问题 | `/story-review` |
-| 封面 | 封面图、生成封面、独立的封面提示词 | `/story-cover` |
+| 封面 | 封面、封面图、封面提示词 | `/story-cover` |
 | 环境部署 | 准备写书、搭环境、初始化 | `/story-setup` |
 | 浏览器操控 | 浏览器、抓取、登录态 | `/browser-cdp` |
 | 导入小说 | 导入、反向解析、导入小说、把我的书导进来 | `/story-import` |
@@ -40,7 +40,7 @@ metadata: {"openclaw":{"source":"https://github.com/zenstory-ai/oh-story-claudec
 
 只说 `/story`、看不出意图时，不贴路由表，给四个白话选项：「开一本长篇或接着写」→ `/story-long-write`；「写一篇短篇」→ `/story-short-write`；「把一章改得不那么 AI」→ `/story-deslop`；「更多（拆书、扫榜、导入旧稿、审稿、封面）」→ 再列进阶项。还没部署过（项目根没有 `.story-deployed`）时先建议 `/story-setup`，并说明部署完要新开一个会话再开始，写作助手才会生效。
 
-只说“帮我开书”而未说明交付物时，先问是要规划故事，还是填写发布平台的建书资料；后者优先走 `/story-publish`。若当前宿主未安装或未发现该 skill（尤其 ClawHub 单独安装 `story` 时），明确告知无法调用并提示安装包含它的完整仓库技能包；不要假装已核验平台规则，也不要套用记忆里的标签。
+作者明确要填平台建书资料（书名、简介、标签）时走 `/story-publish`，只说“开书”照常进长篇写作。ClawHub 单独安装的 `story` 不带 story-publish，找不到它时直接告诉作者，请其安装完整技能包，不凭记忆给平台标签。
 
 ### 导入续写顺序
 

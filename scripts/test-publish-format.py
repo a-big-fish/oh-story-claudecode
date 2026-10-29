@@ -107,13 +107,23 @@ class PublishFormatTests(unittest.TestCase):
     def test_missing_cover_field(self):
         self.assertTrue(checker.validate(LONG.replace("- 图片：未生成", "")))
 
-    def test_title_boundaries(self):
-        self.assertEqual(checker.validate_title("春" * 12 + "：12"), [])
-        self.assertTrue(checker.validate_title("春" * 13 + "：12"))
-        self.assertEqual(checker.validate_title("春风……又一年"), [])
-        for title in ("春风:归来", "春风!", "春风🙂", ""):
+    def test_long_tags_follow_audience_candidates_and_limits(self):
+        male = LONG.replace("- 作者/笔名：待确认", "- 作者/笔名：待确认\n- 目标读者：男频")
+        self.assertEqual(checker.validate(male.replace("- 主分类：", "- 主分类：都市日常")), [])
+        self.assertTrue(checker.validate(male.replace("- 主分类：", "- 主分类：豪门总裁")))  # 女频候选
+        self.assertTrue(checker.validate(male.replace("- 主题：", "- 主题：仕途、天灾、谍战")))
+        self.assertTrue(checker.validate(LONG.replace("- 主分类：", "- 主分类：都市日常")))  # 未定目标读者
+        self.assertTrue(checker.validate(LONG.replace("- 世界观：", "- 世界观：军旅、乡村")))
+
+    def test_title_rules_warn_without_failing(self):
+        self.assertEqual(checker.title_warnings(LONG), [])  # 春风：第2年
+        for title in ("春风:归来", "春风……又一年", "春风 归来", "春" * 16):
             with self.subTest(title=title):
-                self.assertTrue(checker.validate_title(title))
+                text = LONG.replace("春风：第2年", title)
+                self.assertTrue(checker.title_warnings(text))
+                self.assertEqual(checker.validate(text), [])
+        self.assertEqual(checker.title_warnings(SHORT.replace("春风：第2年", "春" * 20 + "abcdefghij")), [])
+        self.assertTrue(checker.title_warnings(SHORT.replace("春风：第2年", "春" * 26)))
 
     def test_short_field_membership(self):
         self.assertTrue(checker.validate(SHORT.replace("角色：白月光", "角色：现代")))
@@ -138,14 +148,18 @@ class PublishFormatTests(unittest.TestCase):
         self.assertTrue(checker.validate(SHORT.replace("- 是否使用AI：", "")))
         self.assertTrue(checker.validate(SHORT.replace("- 试读比例：", "- 签约模式：连载")))
 
-    def test_reference_counts_and_evidence(self):
-        options = checker.short_candidates()
-        self.assertEqual({key: len(value) for key, value in options.items()},
-                         {"主分类": 24, "情节": 34, "角色": 26, "情绪": 8, "背景": 10})
-        reference = ROOT / "skills/story-publish/references/fanqie-short-2026-10-28.md"
-        import re
-        for link in re.findall(r"\]\((evidence/[^)]+)\)", reference.read_text(encoding="utf-8")):
-            self.assertTrue((reference.parent / link).is_file(), link)
+    def test_reference_counts_and_no_bundled_images(self):
+        expected = {
+            "fanqie-short.md": {"主分类": 24, "情节": 34, "角色": 26, "情绪": 8, "背景": 10},
+            "fanqie-reading-male.md": {"主分类": 19, "主题": 33, "角色": 22, "情节": 80},
+            "fanqie-reading-female.md": {"主分类": 21, "主题": 25, "角色": 41, "情节": 95},
+            "fanqie-content-tags.md": {"情节": 144, "情感": 58, "人设": 93, "世界观": 60},
+        }
+        for name, counts in expected.items():
+            options = checker.load_options(name)
+            self.assertEqual({key: len(values) for key, (values, _) in options.items()}, counts, name)
+        # Evidence screenshots stay in the repo; skill copies are deployed into every project.
+        self.assertEqual(list((ROOT / "skills/story-publish").rglob("*.png")), [])
 
     def test_cli_unicode_paths_readonly_and_failure(self):
         with tempfile.TemporaryDirectory(prefix="publish check ") as directory:
